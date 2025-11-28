@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Système de Gestion de Présence</title>
+    
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- SIDEBAR -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-top">
+            <h1 class="brand">
+                <i class="fa-solid fa-graduation-cap"></i>
+                <span class="brand-text">Présence</span>
+            </h1>
+            <button id="toggleSidebar" class="toggle-btn">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+
+        <ul class="nav-list">
+            <li class="nav-item active" data-target="addStudentSection">
+                <i class="fa-solid fa-user-plus"></i>
+                <span>Ajouter</span>
+            </li>
+            <li class="nav-item" data-target="attendanceSection">
+                <i class="fa-solid fa-table"></i>
+                <span>Présences</span>
+            </li>
+            <li class="nav-item" data-target="reportSection">
+                <i class="fa-solid fa-chart-column"></i>
+                <span>Rapport</span>
+            </li>
+        </ul>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <main class="main">
+        
+        <!-- SECTION 1: AJOUTER ÉTUDIANT -->
+        <section id="addStudentSection" class="section active-section card">
+            <h2>
+                <i class="fa-solid fa-user-plus"></i>
+                Ajouter un Étudiant
+            </h2>
+            
+            <form id="studentForm" novalidate class="form-card">
+                <div>
+                    <label for="studentId">
+                        <i class="fa-solid fa-id-card"></i> ID ÉTUDIANT
+                    </label>
+                    <input 
+                        id="studentId" 
+                        type="text" 
+                        placeholder="Ex: 12345"
+                        autocomplete="off"
+                    />
+                    <span id="idError" class="err"></span>
+                </div>
+
+                <div>
+                    <label for="lastName">
+                        <i class="fa-solid fa-user"></i> NOM
+                    </label>
+                    <input 
+                        id="lastName" 
+                        type="text" 
+                        placeholder="Ex: Boudiaf"
+                        autocomplete="off"
+                    />
+                    <span id="lastError" class="err"></span>
+                </div>
+
+                <div>
+                    <label for="firstName">
+                        <i class="fa-solid fa-user"></i> PRÉNOM
+                    </label>
+                    <input 
+                        id="firstName" 
+                        type="text" 
+                        placeholder="Ex: Ahmed"
+                        autocomplete="off"
+                    />
+                    <span id="firstError" class="err"></span>
+                </div>
+
+                <div>
+                    <label for="email">
+                        <i class="fa-solid fa-envelope"></i> EMAIL
+                    </label>
+                    <input 
+                        id="email" 
+                        type="email" 
+                        placeholder="Ex: ahmed.boudiaf@esi.dz"
+                        autocomplete="off"
+                    />
+                    <span id="emailError" class="err"></span>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa-solid fa-plus"></i> Ajouter l'étudiant
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <!-- SECTION 2: PRÉSENCES -->
+        <section id="attendanceSection" class="section card">
+            <h2>
+                <i class="fa-solid fa-table"></i>
+                Tableau de Présence
+            </h2>
+
+            <!-- Recherche -->
+            <div class="search-container">
+                <label for="searchName">Rechercher un étudiant</label>
+                <input 
+                    id="searchName" 
+                    type="text" 
+                    placeholder="Tapez un nom ou prénom..."
+                    autocomplete="off"
+                />
+            </div>
+
+            <!-- Tableau -->
+            <div class="table-wrap">
+                <table id="attendanceTable">
+                    <thead>
+                        <tr>
+                            <th rowspan="2">Nom</th>
+                            <th rowspan="2">Prénom</th>
+                            <th colspan="2">Session 1</th>
+                            <th colspan="2">Session 2</th>
+                            <th colspan="2">Session 3</th>
+                            <th colspan="2">Session 4</th>
+                            <th colspan="2">Session 5</th>
+                            <th colspan="2">Session 6</th>
+                            <th rowspan="2">Absences</th>
+                            <th rowspan="2">Participations</th>
+                            <th rowspan="2">Message</th>
+                        </tr>
+                        <tr>
+                            <th>P</th><th>Pa</th>
+                            <th>P</th><th>Pa</th>
+                            <th>P</th><th>Pa</th>
+                            <th>P</th><th>Pa</th>
+                            <th>P</th><th>Pa</th>
+                            <th>P</th><th>Pa</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+
+            <!-- Boutons -->
+            <div class="buttonsRow">
+                <button id="highlightExcellent" class="btn btn-success">
+                    <i class="fa-solid fa-star"></i> Étudiants Excellents
+                </button>
+                <button id="resetColors" class="btn btn-secondary">
+                    <i class="fa-solid fa-rotate-right"></i> Réinitialiser
+                </button>
+                <button id="saveAttendance" class="btn btn-primary">
+                    <i class="fa-solid fa-save"></i> Sauvegarder les présences
+                </button>
+            </div>
+
+            <!-- Tri -->
+            <div class="buttonsRow">
+                <button id="sortByAbsences" class="btn btn-primary">
+                    <i class="fa-solid fa-arrow-up-wide-short"></i> Trier par Absences
+                </button>
+                <button id="sortByParticipation" class="btn btn-primary">
+                    <i class="fa-solid fa-arrow-down-wide-short"></i> Trier par Participations
+                </button>
+            </div>
+
+            <p id="sortStatus"></p>
+        </section>
+
+        <!-- SECTION 3: RAPPORT -->
+        <section id="reportSection" class="section card">
+            <h2>
+                <i class="fa-solid fa-chart-column"></i>
+                Rapport Global
+            </h2>
+
+            <div id="reportText" class="report-box">
+                <i class="fa-solid fa-spinner fa-spin"></i> Chargement des données...
+            </div>
+
+            <div class="chart-wrap">
+                <canvas id="reportChart"></canvas>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Toast -->
+    <div id="toast"></div>
+
+    <!-- Scripts -->
+    <script src="js/api.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+{
+    "date": "2025-11-26",
+    "time": "22:38:32",
+    "attendance": [
+        {
+            "lastName": "lina",
+            "firstName": "larbaoui",
+            "presences": 4,
+            "participations": 4,
+            "absences": 2
+        },
+        {
+            "lastName": "kherfi",
+            "firstName": "khalil",
+            "presences": 4,
+            "participations": 2,
+            "absences": 2
+        }
+    ]
+}

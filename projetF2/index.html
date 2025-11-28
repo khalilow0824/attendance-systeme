@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Présence – Dashboard</title>
+
+<!-- Police & icônes -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<!-- CSS - CHEMIN RELATIF CORRIGÉ -->
+<link rel="stylesheet" href="css/style.css">
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <!-- SIDEBAR -->
+  <div class="sidebar" id="sidebar">
+    <!-- Ajouter dans la sidebar -->
+<li class="nav-item" data-target="testSection">
+    <i class="fa-solid fa-vial"></i>
+    <span>Test DB</span>
+</li>
+
+<!-- Ajouter une nouvelle section -->
+<section id="testSection" class="section card">
+    <h2>
+        <i class="fa-solid fa-vial" style="color: var(--accent);"></i>
+        Test de Connexion
+    </h2>
+    <iframe src="php/test_db.php" style="width: 100%; height: 600px; border: none; border-radius: 10px;"></iframe>
+</section>
+    <div class="sidebar-top">
+      <h1 class="brand">
+        <i class="fa-solid fa-graduation-cap"></i>
+        <span class="brand-text">Présence</span>
+      </h1>
+      <button id="toggleSidebar" class="toggle-btn" aria-label="Toggle sidebar">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+    </div>
+
+    <ul class="nav-list">
+      <li class="nav-item active" data-target="addStudentSection">
+        <i class="fa-solid fa-user-plus"></i>
+        <span>Ajouter</span>
+      </li>
+      <li class="nav-item" data-target="attendanceSection">
+        <i class="fa-solid fa-table"></i>
+        <span>Présences</span>
+      </li>
+      <li class="nav-item" data-target="reportSection">
+        <i class="fa-solid fa-chart-column"></i>
+        <span>Rapport</span>
+      </li>
+    </ul>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <main class="main">
+    
+    <!-- SECTION 1: AJOUTER UN ÉTUDIANT -->
+    <section id="addStudentSection" class="section active-section card">
+      <h2>
+        <i class="fa-solid fa-user-plus" style="color: var(--accent);"></i>
+        Ajouter un Étudiant
+      </h2>
+      
+      <form id="studentForm" novalidate class="form-card">
+        <div>
+          <label for="studentId">
+            <i class="fa-solid fa-id-card"></i> ID Étudiant
+          </label>
+          <input 
+            id="studentId" 
+            type="text" 
+            placeholder="Ex: 12345"
+            autocomplete="off"
+          />
+          <span id="idError" class="err"></span>
+        </div>
+
+        <div>
+          <label for="lastName">
+            <i class="fa-solid fa-user"></i> Nom
+          </label>
+          <input 
+            id="lastName" 
+            type="text" 
+            placeholder="Ex: Boudiaf"
+            autocomplete="off"
+          />
+          <span id="lastError" class="err"></span>
+        </div>
+
+        <div>
+          <label for="firstName">
+            <i class="fa-solid fa-user"></i> Prénom
+          </label>
+          <input 
+            id="firstName" 
+            type="text" 
+            placeholder="Ex: Ahmed"
+            autocomplete="off"
+          />
+          <span id="firstError" class="err"></span>
+        </div>
+
+        <div>
+          <label for="email">
+            <i class="fa-solid fa-envelope"></i> Email
+          </label>
+          <input 
+            id="email" 
+            type="email" 
+            placeholder="Ex: ahmed.boudiaf@esi.dz"
+            autocomplete="off"
+          />
+          <span id="emailError" class="err"></span>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">
+            <i class="fa-solid fa-plus"></i> Ajouter l'étudiant
+          </button>
+        </div>
+      </form>
+
+      <div style="margin-top: 24px; padding: 16px; background: rgba(155,89,182,0.05); border-radius: 12px; border-left: 4px solid var(--accent);">
+        <p style="color: var(--violet-1); font-size: 14px;">
+          <i class="fa-solid fa-circle-info"></i> 
+          <strong>Astuce :</strong> Après l'ajout, l'étudiant apparaîtra automatiquement dans le tableau de présence.
+        </p>
+      </div>
+    </section>
+
+    <!-- SECTION 2: TABLEAU DE PRÉSENCE -->
+    <section id="attendanceSection" class="section card">
+      <h2>
+        <i class="fa-solid fa-table" style="color: var(--accent);"></i>
+        Tableau de Présence
+      </h2>
+
+      <!-- Barre de recherche -->
+      <div class="search-container">
+        <label for="searchName">
+          Rechercher un étudiant
+        </label>
+        <input 
+          id="searchName" 
+          type="text" 
+          placeholder="Tapez un nom ou prénom..."
+          autocomplete="off"
+        />
+      </div>
+
+      <!-- Tableau responsive -->
+      <div class="table-wrap">
+        <table id="attendanceTable" aria-label="Table de présence">
+          <thead>
+            <tr>
+              <th rowspan="2">Nom</th>
+              <th rowspan="2">Prénom</th>
+              <th colspan="2">Session 1</th>
+              <th colspan="2">Session 2</th>
+              <th colspan="2">Session 3</th>
+              <th colspan="2">Session 4</th>
+              <th colspan="2">Session 5</th>
+              <th colspan="2">Session 6</th>
+              <th rowspan="2">Absences</th>
+              <th rowspan="2">Participations</th>
+              <th rowspan="2">Message</th>
+            </tr>
+            <tr>
+              <th>P</th><th>Pa</th>
+              <th>P</th><th>Pa</th>
+              <th>P</th><th>Pa</th>
+              <th>P</th><th>Pa</th>
+              <th>P</th><th>Pa</th>
+              <th>P</th><th>Pa</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Les étudiants seront chargés dynamiquement -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Info bulle -->
+      <div style="margin-top: 16px; padding: 12px; background: rgba(155,89,182,0.05); border-radius: 8px; font-size: 13px; color: var(--violet-1);">
+        <i class="fa-solid fa-lightbulb" style="color: var(--accent);"></i>
+        <strong>Comment utiliser :</strong> Cliquez sur les cases <strong>P</strong> (Présence) ou <strong>Pa</strong> (Participation) pour marquer les étudiants.
+      </div>
+
+      <!-- Boutons d'action -->
+      <div class="buttonsRow">
+        <button id="highlightExcellent" class="btn btn-success">
+          <i class="fa-solid fa-star"></i> Étudiants Excellents
+        </button>
+        <button id="resetColors" class="btn btn-secondary">
+          <i class="fa-solid fa-rotate-right"></i> Réinitialiser
+        </button>
+        <button id="saveAttendance" class="btn btn-primary">
+          <i class="fa-solid fa-floppy-disk"></i> Sauvegarder les présences
+        </button>
+        <button id="reloadStudents" class="btn btn-primary">
+    <i class="fa-solid fa-rotate"></i> Recharger les étudiants
+</button>
+      </div>
+
+      <!-- Boutons de tri -->
+      <div class="buttonsRow">
+        <button id="sortByAbsences" class="btn btn-primary">
+          <i class="fa-solid fa-arrow-up-wide-short"></i> Trier par Absences
+        </button>
+        <button id="sortByParticipation" class="btn btn-primary">
+          <i class="fa-solid fa-arrow-down-wide-short"></i> Trier par Participations
+        </button>
+      </div>
+
+      <!-- Status du tri -->
+      <p id="sortStatus"></p>
+    </section>
+
+    <!-- SECTION 3: RAPPORT GLOBAL -->
+    <section id="reportSection" class="section card">
+      <h2>
+        <i class="fa-solid fa-chart-column" style="color: var(--accent);"></i>
+        Rapport Global
+      </h2>
+
+      <!-- Statistiques textuelles -->
+      <div id="reportText" class="report-box">
+        <i class="fa-solid fa-spinner fa-spin"></i> Chargement des données...
+      </div>
+
+      <!-- Graphique -->
+      <div class="chart-wrap">
+        <canvas id="reportChart"></canvas>
+      </div>
+
+      <!-- Légende -->
+      <div style="margin-top: 20px; padding: 16px; background: rgba(155,89,182,0.05); border-radius: 12px;">
+        <h3 style="color: var(--violet-1); margin-bottom: 12px; font-size: 18px;">
+          <i class="fa-solid fa-circle-info"></i> Légende des couleurs
+        </h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <div style="width: 20px; height: 20px; background: linear-gradient(90deg, #e8fff0, #d0ffdf); border-radius: 4px; border: 2px solid #27ae60;"></div>
+            <span style="font-size: 14px; color: #222;">Moins de 3 absences</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <div style="width: 20px; height: 20px; background: linear-gradient(90deg, #fffbe6, #fff2bf); border-radius: 4px; border: 2px solid #f39c12;"></div>
+            <span style="font-size: 14px; color: #222;">3-4 absences</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <div style="width: 20px; height: 20px; background: linear-gradient(90deg, #ffdede, #ffc7c7); border-radius: 4px; border: 2px solid #e74c3c;"></div>
+            <span style="font-size: 14px; color: #222;">5+ absences</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Toast notification -->
+  <div id="toast" aria-live="polite"></div>
+
+  <!-- JavaScript - CHEMINS RELATIFS CORRIGÉS -->
+  <script src="js/api.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
